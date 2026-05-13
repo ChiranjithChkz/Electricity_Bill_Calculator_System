@@ -1,0 +1,14 @@
+D:\C# code\Electricity Bill Calculator\bin\Debug\net10.0\Electricity Bill Calculator.exe
+D:\C# code\Electricity Bill Calculator\bin\Debug\net10.0\Electricity Bill Calculator.deps.json
+D:\C# code\Electricity Bill Calculator\bin\Debug\net10.0\Electricity Bill Calculator.runtimeconfig.json
+D:\C# code\Electricity Bill Calculator\bin\Debug\net10.0\Electricity Bill Calculator.dll
+D:\C# code\Electricity Bill Calculator\bin\Debug\net10.0\Electricity Bill Calculator.pdb
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.GeneratedMSBuildEditorConfig.editorconfig
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.AssemblyInfoInputs.cache
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.AssemblyInfo.cs
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.csproj.CoreCompileInputs.cache
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.dll
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\refint\Electricity Bill Calculator.dll
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.pdb
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.genruntimeconfig.cache
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\ref\Electricity Bill Calculator.dll
