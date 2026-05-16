@@ -27,7 +27,7 @@ What makes this project stand apart from a basic calculator is its **depth and c
 - A **document verification module** with immutable document records, per-account-type requirements, and a read-only document store
 - A **payment tracking module** that records payments, tracks outstanding balances, handles partial payments, detects overpayments, and maintains an immutable payment history
 - **21 custom exception classes** — one for every meaningful failure scenario — so nothing ever fails silently or with a meaningless generic message
-- **5 OOP pillars** applied throughout: Encapsulation, Inheritance, Polymorphism, Abstraction, and Interface-based design
+- **4 OOP pillars** applied throughout: Encapsulation, Inheritance, Polymorphism and Abstraction design
 - **Private backing fields and validated setters on every single property** in every single class — anonymous code simply cannot corrupt data
 
 This is not a project that does one thing. It is a layered system that models how real billing software works.
@@ -80,7 +80,7 @@ The system guides users through a numbered menu that handles all error cases gra
 
 ## 🎓 OOP Concepts Applied
 
-All five pillars of Object-Oriented Programming are present and deliberate in this project — not just named in a list but actually demonstrated through concrete implementation.
+All four pillars of Object-Oriented Programming are present and deliberate in this project — not just named in a list but actually demonstrated through concrete implementation.
 
 ---
 
@@ -110,29 +110,8 @@ This pattern is applied to every property in `ElectricityUser`, `Customer`, `Res
 
 ---
 
-### 2 · Inheritance
 
-**What it means:** Child classes inherit shared behaviour from a parent and only override what is specific to them.
-
-**How it is applied here:** Two clean, parallel inheritance trees — one for users, one for calculators. No code is duplicated anywhere.
-
-```
-ElectricityUser          ← holds all shared user data and virtual methods
-├── ResidentialUser      ← adds MonthlyAllowance
-├── CommercialUser       ← adds LicenseNumber
-└── IndustrialUser       ← adds ProductionCapacity
-
-BillCalculator (abstract)   ← defines the billing contract
-├── ResidentialBillCalculator   ← 5.00 BDT/kWh, 10% tax
-├── CommercialBillCalculator    ← 8.00 BDT/kWh, 15% tax
-└── IndustrialBillCalculator    ← 6.00 BDT/kWh, 5% tax
-```
-
-Each subclass inherits shared logic from its parent and overrides only what differs — rates, tax percentages, display fields, and type-specific properties.
-
----
-
-### 3 · Polymorphism
+### 2 · Polymorphism
 
 **What it means:** The same method call produces different behaviour depending on the actual type of the object at runtime.
 
@@ -147,7 +126,7 @@ If `selectedUser` is a `ResidentialUser`, the `ResidentialBillCalculator` runs a
 
 ---
 
-### 4 · Abstraction
+### 3 · Abstraction
 
 **What it means:** Defining a contract that subclasses must fulfil, hiding implementation details behind a shared interface.
 
@@ -171,7 +150,7 @@ A class that does not implement all three abstract methods will not compile. The
 
 ---
 
-### 5 · Interface
+### 4 · Interface
 
 **What it means:** Defining a strict contract that any class can implement, enabling loose coupling between components.
 
@@ -195,6 +174,28 @@ public Customer(ICustomerValidator validator)
     _validator = validator;
 }
 ```
+
+---
+
+###  · Inheritance (a category of class)
+
+**What it means:** Child classes inherit shared behaviour from a parent and only override what is specific to them.
+
+**How it is applied here:** Two clean, parallel inheritance trees — one for users, one for calculators. No code is duplicated anywhere.
+
+```
+ElectricityUser          ← holds all shared user data and virtual methods
+├── ResidentialUser      ← adds MonthlyAllowance
+├── CommercialUser       ← adds LicenseNumber
+└── IndustrialUser       ← adds ProductionCapacity
+
+BillCalculator (abstract)   ← defines the billing contract
+├── ResidentialBillCalculator   ← 5.00 BDT/kWh, 10% tax
+├── CommercialBillCalculator    ← 8.00 BDT/kWh, 15% tax
+└── IndustrialBillCalculator    ← 6.00 BDT/kWh, 5% tax
+```
+
+Each subclass inherits shared logic from its parent and overrides only what differs — rates, tax percentages, display fields, and type-specific properties.
 
 ---
 
@@ -913,7 +914,7 @@ This project was carefully debugged and improved from its original version. Ever
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project can be used for educational purpose.
 
 ---
 
