@@ -12,3 +12,4 @@ D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\refint\Electricity Bill
 D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.pdb
 D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.genruntimeconfig.cache
 D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\ref\Electricity Bill Calculator.dll
+D:\C# code\Electricity Bill Calculator\obj\Debug\net10.0\Electricity Bill Calculator.sourcelink.json

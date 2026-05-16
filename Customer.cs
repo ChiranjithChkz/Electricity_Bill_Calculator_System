@@ -11,7 +11,7 @@ public class Customer
     {
         if (validator == null)
             throw new ArgumentNullException(nameof(validator),
-                "A validator must be provided to create a Customer.");
+                "Must be provided to create a Customer.");
         _validator = validator;
     }
 

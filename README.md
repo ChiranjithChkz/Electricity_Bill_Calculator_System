@@ -5,13 +5,13 @@
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET_6.0+-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![OOP](https://img.shields.io/badge/OOP-5_Pillars-orange?style=for-the-badge)
-![Exceptions](https://img.shields.io/badge/Custom_Exceptions-17-red?style=for-the-badge)
-![Files](https://img.shields.io/badge/Source_Files-18-blue?style=for-the-badge)
+![Exceptions](https://img.shields.io/badge/Custom_Exceptions-21-red?style=for-the-badge)
+![Files](https://img.shields.io/badge/Source_Files-21-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the-badge)
 
-**A production-quality, fully object-oriented electricity billing system built in C# (.NET) — covering user management, tariff-based billing, payment tracking, encapsulated data protection, and a complete custom exception framework.**
+**A production-quality, fully object-oriented electricity billing system built in C# (.NET) — covering interactive user registration with document verification, tariff-based billing, payment tracking, encapsulated data protection, and a complete custom exception framework.**
 
-[Features](#-features) · [OOP Concepts](#-oop-concepts-applied) · [Architecture](#-project-architecture) · [Billing Logic](#-billing--tariff-logic) · [Payment System](#-payment-tracking-system) · [Exceptions](#-exception-handling-system) · [Encapsulation](#-encapsulation-deep-dive) · [Getting Started](#-getting-started) · [Sample Output](#-sample-output)
+[Features](#-features) · [OOP Concepts](#-oop-concepts-applied) · [Architecture](#-project-architecture) · [Document System](#-document-verification-system) · [Billing Logic](#-billing--tariff-logic) · [Payment System](#-payment-tracking-system) · [Exceptions](#-exception-handling-system) · [Encapsulation](#-encapsulation-deep-dive) · [Getting Started](#-getting-started) · [Sample Output](#-sample-output)
 
 </div>
 
@@ -23,9 +23,10 @@ The **Electricity Bill Calculator** is a console-based application that simulate
 
 What makes this project stand apart from a basic calculator is its **depth and completeness**. Beyond generating a number, it implements:
 
-- A fully validated **user management system** with encapsulated data at every layer
+- A fully interactive **user registration system** with step-by-step console input, type-specific required documents, and document validation (expiry, duplicates, required fields)
+- A **document verification module** with immutable document records, per-account-type requirements, and a read-only document store
 - A **payment tracking module** that records payments, tracks outstanding balances, handles partial payments, detects overpayments, and maintains an immutable payment history
-- **17 custom exception classes** — one for every meaningful failure scenario — so nothing ever fails silently or with a meaningless generic message
+- **21 custom exception classes** — one for every meaningful failure scenario — so nothing ever fails silently or with a meaningless generic message
 - **5 OOP pillars** applied throughout: Encapsulation, Inheritance, Polymorphism, Abstraction, and Interface-based design
 - **Private backing fields and validated setters on every single property** in every single class — anonymous code simply cannot corrupt data
 
@@ -36,7 +37,10 @@ This is not a project that does one thing. It is a layered system that models ho
 ## 🏆 Why This Project Is Best for Users
 
 ### 🔒 Your Data Cannot Be Corrupted
-Every field in every class is `private`. Properties validate input before accepting it. You cannot assign a negative meter reading, an empty user ID, a negative payment, or an impossible connection year — the system rejects it immediately with a specific message telling you exactly what is wrong and why.
+Every field in every class is `private`. Properties validate input before accepting it. You cannot assign a negative meter reading, an empty user ID, a negative payment, an expired document, or an impossible connection year — the system rejects it immediately with a specific message telling you exactly what is wrong and why.
+
+### 📄 Document-Verified Registration
+New users cannot be registered without submitting all required documents. The system enforces different document requirements per account type — residential users need a National ID and Utility Ownership Proof, commercial users need a National ID and Business Registration, and industrial users need all three plus an Industrial License. Submitting an expired document, an empty document number, or a duplicate document type is blocked at the point of entry.
 
 ### 💬 Errors Are Always Meaningful
 Instead of crashing or printing "Error occurred", every failure has its own named exception class. The message tells the user what they tried to do, what value they used, and what the correct behaviour should be. No user is ever left confused about what went wrong.
@@ -45,10 +49,10 @@ Instead of crashing or printing "Error occurred", every failure has its own name
 Most billing tools just calculate a number. This system takes that number and lets the user record payments against it — with a method, reference number, date, and remarks — then tracks the outstanding balance, detects when bills are fully paid, flags overpayments, and keeps a permanent history. The entire financial lifecycle of a customer account is managed in one place.
 
 ### 🛡️ Impossible to Misuse
-The internal list of payments is exposed only as a read-only collection. The payment history cannot be modified from outside `PaymentTracker`. `UserManager`'s dictionary is private. Billing calculator logic is sealed inside each subclass. At every level, the system is designed so that misuse is not just discouraged — it is impossible.
+The internal list of payments is exposed only as a read-only collection. The document store is also read-only externally. `UserManager`'s dictionary is private. Billing calculator logic is sealed inside each subclass. At every level, the system is designed so that misuse is not just discouraged — it is impossible.
 
-### 🧭 Intuitive 7-Option Menu
-The system guides users through a numbered menu that handles all error cases gracefully. Typing an invalid menu choice, an empty user ID, or a non-numeric payment amount never crashes the application — it always prints a clear, labelled error message and returns the user to the menu.
+### 🧭 Intuitive 9-Option Menu
+The system guides users through a numbered menu that handles all error cases gracefully. Typing an invalid menu choice, an empty user ID, a non-numeric payment amount, or an expired document number never crashes the application — it always prints a clear, labelled error message and returns the user to the next prompt.
 
 ---
 
@@ -56,18 +60,21 @@ The system guides users through a numbered menu that handles all error cases gra
 
 | Feature | Detail |
 |---|---|
-| 👥 **Multi-type User Management** | Register and manage Residential, Commercial, and Industrial users |
+| 👥 **Interactive User Registration** | Full step-by-step console form: account type → user info → documents → validation → save |
+| 📄 **Document Verification** | Required documents enforced per account type — expired, duplicate, or empty docs rejected |
 | 🗂️ **Category Column Display** | View all registered users sorted into three side-by-side columns |
 | 🔍 **User Lookup** | Find any user by ID — case-insensitive matching |
 | 🧮 **Itemised Bill Generation** | Energy charge + tax + fixed service charge + 5% VAT |
 | 💳 **Payment Recording** | Record payments with method, reference number, date, and remarks |
 | 📊 **Payment Summary** | View total billed, paid, outstanding balance, and current status |
 | 📜 **Payment History** | Chronological list of every payment for a given user |
+| 📋 **Document Viewer** | View all submitted documents for any user with full detail and validity status |
 | ⚠️ **Overdue Marking** | Flag unpaid or partially paid accounts as overdue |
 | 🔐 **Full Encapsulation** | Every field private — validated setters enforce all business rules |
-| 🚨 **17 Custom Exceptions** | One named exception per failure scenario, never a generic crash |
+| 🚨 **21 Custom Exceptions** | One named exception per failure scenario, never a generic crash |
 | 🔄 **Automatic Status Updates** | Payment status refreshes automatically after every payment |
 | 🧾 **Overpayment Detection** | Warns when payment exceeds 150% of the bill and shows credit |
+| 📅 **Expiry Warning** | Documents expiring within 30 days are flagged automatically |
 
 ---
 
@@ -99,7 +106,7 @@ public double PreviousReading
 }
 ```
 
-This pattern is applied to every property in `ElectricityUser`, `Customer`, `ResidentialUser`, `CommercialUser`, `IndustrialUser`, `PaymentRecord`, and `PaymentTracker`.
+This pattern is applied to every property in `ElectricityUser`, `Customer`, `ResidentialUser`, `CommercialUser`, `IndustrialUser`, `PaymentRecord`, `PaymentTracker`, `UserDocument`, and `DocumentStore`.
 
 ---
 
@@ -198,26 +205,31 @@ The project is organised in a strict dependency order. Each layer depends only o
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                          Program.cs                             │
-│                   Entry point · Main menu loop                  │
+│                   Entry point · Main menu loop (9 options)      │
 └────────────────────────────┬────────────────────────────────────┘
                              │
 ┌────────────────────────────▼────────────────────────────────────┐
 │                        UserManager.cs                           │
-│     Registers users · Calculates bills · Handles payments       │
-└──────┬──────────────────────────┬───────────────────┬───────────┘
-       │                          │                   │
-┌──────▼──────────┐  ┌────────────▼──────────┐  ┌────▼─────────────┐
-│ ElectricityUser │  │    BillCalculator      │  │  PaymentTracker  │
-│   (base class)  │  │   (abstract base)      │  │  (per-user)      │
-└──┬────┬────┬────┘  └──┬─────────┬──────┬───┘  └──────┬───────────┘
-   │    │    │           │         │      │             │
-Residential  │       Residential   │   Industrial  PaymentRecord
- User   Commercial  Calculator Commercial  Calculator  (immutable)
-        User         IndustrialCalculator
+│   Registers users · Documents · Bills · Payments · Display      │
+└──────┬───────────────────────┬──────────────────┬──────────────┘
+       │                       │                  │
+┌──────▼──────────┐  ┌─────────▼────────┐  ┌─────▼────────────────┐
+│ ElectricityUser │  │  BillCalculator  │  │   PaymentTracker     │
+│  (base class)   │  │ (abstract base)  │  │    (per-user)        │
+│  + DocumentStore│  └──┬──────┬─────┬──┘  └──────┬───────────────┘
+└──┬────┬────┬────┘     │      │     │            │
+   │    │    │       Resid.  Comm. Indus.    PaymentRecord
+Resid. Comm. Indus.  Calc.  Calc. Calc.      (immutable)
+User   User  User
+       │
+  DocumentStore
+       │
+  UserDocument[]
+  (immutable)
 
 ── Foundation Layer ──────────────────────────────────────────────
-  PaymentStatus (enum)    PaymentMethod (enum)
-  ElectricityExceptions (17 custom exception classes)
+  PaymentStatus (enum)    PaymentMethod (enum)    DocumentType (enum)
+  ElectricityExceptions (21 custom exception classes)
   ICustomerValidator → CustomerValidator → Customer
 ```
 
@@ -231,14 +243,19 @@ Electricity_Bill_Calculator/
 │  ── Enums ──────────────────────────────────────────────────────
 ├── PaymentStatus.cs                # Unpaid / PartiallyPaid / Paid / Overdue
 ├── PaymentMethod.cs                # Cash / BankTransfer / MobileBanking / ChequePayment
+├── DocumentType.cs                 # NationalId / Passport / DrivingLicense / ...
 │
 │  ── Exception Framework ────────────────────────────────────────
-├── ElectricityExceptions.cs        # 17 named exception classes in one file
+├── ElectricityExceptions.cs        # 21 named exception classes in one file
 │
 │  ── Validation Layer ───────────────────────────────────────────
 ├── ICustomerValidator.cs           # Interface — defines the validation contract
 ├── CustomerValidator.cs            # Implements ICustomerValidator
 ├── Customer.cs                     # Validated customer data model
+│
+│  ── Document System ────────────────────────────────────────────
+├── UserDocument.cs                 # Single immutable document record
+├── DocumentStore.cs                # Per-user document collection + requirement rules
 │
 │  ── Payment System ─────────────────────────────────────────────
 ├── PaymentRecord.cs                # Single immutable payment entry
@@ -261,7 +278,59 @@ Electricity_Bill_Calculator/
 └── Program.cs                      # Entry point and main menu loop
 ```
 
-**Total: 18 source files**
+**Total: 21 source files**
+
+---
+
+## 📄 Document Verification System
+
+Every new user registered through the system must submit the required documents for their account type before registration is finalised. Documents are validated at the point of entry — the registration form does not abort if one document fails; it shows the error, lets you correct it, and continues collecting documents until you are done.
+
+### Supported Document Types
+
+| # | Document Type | Who Typically Submits It |
+|---|---|---|
+| 1 | National ID | All account types (mandatory for all) |
+| 2 | Passport | Optional identity alternative |
+| 3 | Driving License | Optional identity alternative |
+| 4 | Utility Ownership Proof | Required for Residential accounts |
+| 5 | Business Registration | Required for Commercial and Industrial accounts |
+| 6 | Industrial License | Required for Industrial accounts only |
+
+### Required Documents Per Account Type
+
+| Account Type | Required Documents |
+|---|---|
+| 🏠 **Residential** | National ID + Utility Ownership Proof |
+| 🏢 **Commercial** | National ID + Business Registration |
+| 🏭 **Industrial** | National ID + Business Registration + Industrial License |
+
+Registration is **blocked** if any required document is missing. The system tells you exactly which document is still needed.
+
+### Document Validation Rules
+
+Every document submitted is checked against five rules before being accepted:
+
+- **Document number** cannot be empty or whitespace
+- **Issue date** cannot be in the future
+- **Expiry date** must be strictly after the issue date
+- **Document must not already be expired** at the time of submission
+- **Issuing authority** cannot be empty or whitespace
+- **Same document type** cannot be submitted twice for the same user
+
+### Document Safety Design
+
+- `UserDocument` is **fully immutable** — all fields are `private readonly` with no setters. Once created, a document record can never be changed.
+- `DocumentStore` exposes its list only as `ReadOnlyCollection<UserDocument>` — external code can read but not modify the document history.
+- Each user owns their own `DocumentStore` created at construction time and accessible only through the read-only `DocumentStore` property on `ElectricityUser`.
+
+### Expiry Warning
+
+If a valid document expires within 30 days, the system displays an automatic warning next to the expiry date when the document is viewed:
+
+```
+  Expiry Date     : 15 Jun 2026  ⚠ Expires in 28 day(s)
+```
 
 ---
 
@@ -296,12 +365,12 @@ Previous Reading :  3,000 kWh
 Current Reading  :  4,500 kWh
 Units Consumed   :  1,500 kWh
 
-Energy Charge    :  1,500 × 5.00        =  7,500.00 BDT
-Tax (10%)        :  7,500 × 0.10        =    750.00 BDT
-Service Charge   :                         120.00 BDT
-VAT (5%)         :  (7,500+750+120)×0.05 =  418.50 BDT
-─────────────────────────────────────────────────────
-TOTAL BILL       :                       8,788.50 BDT
+Energy Charge    :  1,500 × 5.00          =  7,500.00 BDT
+Tax (10%)        :  7,500 × 0.10          =    750.00 BDT
+Service Charge   :                            120.00 BDT
+VAT (5%)         :  (7,500+750+120)×0.05  =    418.50 BDT
+───────────────────────────────────────────────────────
+TOTAL BILL       :                         8,788.50 BDT
 ```
 
 ---
@@ -376,7 +445,7 @@ Every possible failure scenario has its own named exception class. Nothing ever 
 | `UserNotFoundException` | No user found for the given ID |
 | `DuplicateUserIdException` | A user with the same ID is already registered |
 | `NullUserException` | A null object is passed to AddUser |
-| `InvalidMenuChoiceException` | Input is outside the 1–7 menu range |
+| `InvalidMenuChoiceException` | Input is outside the 1–9 menu range |
 | `BillingCalculationException` | Any unexpected error during bill calculation |
 
 #### Customer Validation Exceptions
@@ -396,22 +465,31 @@ Every possible failure scenario has its own named exception class. Nothing ever 
 | `NoBillGeneratedException` | Payment attempted before a bill is generated |
 | `ExcessiveOverpaymentException` | Payment would exceed 150% of the total bill |
 
+#### Document Exceptions
+
+| Exception Class | Thrown When |
+|---|---|
+| `InvalidDocumentNumberException` | Document number is empty or whitespace |
+| `ExpiredDocumentException` | Document's expiry date is already in the past |
+| `MissingRequiredDocumentException` | A mandatory document type was not submitted before registration |
+| `DocumentAlreadyExistsException` | Same document type submitted twice for one user |
+
 ### Exception Design Pattern
 
 Every custom exception follows the same structure — it extends `Exception`, carries a specific descriptive message, and exposes the bad value as a readable property so catch blocks can work with it programmatically.
 
 ```csharp
-public class CurrentReadingBelowPreviousException : Exception
+public class ExpiredDocumentException : Exception
 {
-    public double PreviousReading { get; }
-    public double CurrentReading  { get; }
+    public DocumentType DocumentType { get; }
+    public DateTime     ExpiryDate   { get; }
 
-    public CurrentReadingBelowPreviousException(double previousReading, double currentReading)
-        : base($"Current reading ({currentReading} kWh) cannot be less than previous reading " +
-               $"({previousReading} kWh). Meter readings must increase over time.")
+    public ExpiredDocumentException(DocumentType documentType, DateTime expiryDate)
+        : base($"{UserDocument.FormatDocumentType(documentType)} expired on " +
+               $"{expiryDate:dd MMM yyyy}. Only valid documents can be submitted.")
     {
-        PreviousReading = previousReading;
-        CurrentReading  = currentReading;
+        DocumentType = documentType;
+        ExpiryDate   = expiryDate;
     }
 }
 ```
@@ -421,21 +499,23 @@ public class CurrentReadingBelowPreviousException : Exception
 Every catch block in `UserManager` and `Program` prefixes the message with a label so the user knows the category of the error instantly:
 
 ```
-  [Input Error]       — something typed was invalid
-  [Not Found]         — the requested user does not exist
-  [Registration Error]— a duplicate or null user was submitted
-  [Billing Error]     — something went wrong during bill/payment calculation
-  [Payment Error]     — a payment-specific rule was violated
-  [Unexpected Error]  — a truly unknown error occurred (with details)
-  [Setup Error]       — a pre-loaded sample user failed to initialise
-  [Critical Error]    — a fatal application-level failure
+  [Input Error]         — something typed was invalid
+  [Not Found]           — the requested user does not exist
+  [Registration Error]  — a duplicate or null user was submitted
+  [Registration Blocked]— required documents are missing; user was not saved
+  [Billing Error]       — something went wrong during bill/payment calculation
+  [Payment Error]       — a payment-specific rule was violated
+  [Document Error]      — a document validation rule was violated
+  [Unexpected Error]    — a truly unknown error occurred (with details)
+  [Setup Error]         — a pre-loaded sample user failed to initialise
+  [Critical Error]      — a fatal application-level failure
 ```
 
 ---
 
 ## 🔒 Encapsulation Deep Dive
 
-Encapsulation in this project is not a decoration — it is a complete design decision applied at five distinct levels.
+Encapsulation in this project is not a decoration — it is a complete design decision applied at six distinct levels.
 
 ### Level 1 — Private Backing Fields Everywhere
 
@@ -477,25 +557,39 @@ Once a `PaymentRecord` is created, it cannot be changed. There are no setters �
 // PaymentRecord.cs — no setters exist
 public double   AmountPaid      { get { return _amountPaid; } }
 public string   ReferenceNumber { get { return _referenceNumber; } }
-public string   Remarks         { get { return _remarks; } }
-public DateTime PaymentDate     { get; }   // init-only, set in constructor
-public PaymentMethod Method     { get; }   // init-only, set in constructor
+public DateTime PaymentDate     { get; }
+public PaymentMethod Method     { get; }
 ```
 
-### Level 4 — Read-Only Payment History
+### Level 4 — Immutable Document Records
 
-The list of `PaymentRecord` objects inside `PaymentTracker` is `private readonly`. External code receives it as a `ReadOnlyCollection` — it can iterate and read but cannot add, remove, or replace entries.
+`UserDocument` applies the same principle as `PaymentRecord`. All six fields are `private readonly`. No setter exists on any property. A document record, once submitted, is a permanent and unalterable entry.
 
 ```csharp
-private readonly List<PaymentRecord> _paymentHistory;
+// UserDocument.cs — all fields are private readonly
+private readonly DocumentType _documentType;
+private readonly string       _documentNumber;
+private readonly DateTime     _issueDate;
+private readonly DateTime     _expiryDate;
+private readonly string       _issuingAuthority;
+private readonly DateTime     _submittedAt;
+```
 
-public ReadOnlyCollection<PaymentRecord> PaymentHistory
+### Level 5 — Read-Only Collections
+
+Both `PaymentTracker` and `DocumentStore` expose their internal lists only as `ReadOnlyCollection<T>`. External code can iterate and read but cannot add, remove, or replace entries.
+
+```csharp
+// DocumentStore.cs
+private readonly List<UserDocument> _documents;
+
+public ReadOnlyCollection<UserDocument> Documents
 {
-    get { return _paymentHistory.AsReadOnly(); }
+    get { return _documents.AsReadOnly(); }
 }
 ```
 
-### Level 5 — Private Internals in UserManager
+### Level 6 — Private Internals in UserManager
 
 The registered user dictionary and all category filter methods are `private`. External code has no direct path to the dictionary — it must go through the defined public methods.
 
@@ -531,7 +625,7 @@ dotnet run
 
 ### Pre-loaded Test Users
 
-Three users are registered automatically at startup so you can test all features immediately:
+Three users are registered automatically at startup so you can test billing and payment features immediately:
 
 | User ID | Name | Account Type |
 |---|---|---|
@@ -557,10 +651,12 @@ Three users are registered automatically at startup so you can test all features
   4. Record Payment
   5. View Payment Summary
   6. View Payment History
-  7. Exit
+  7. Register New User
+  8. View User Documents
+  9. Exit
 ```
 
-### Recommended Workflow
+### Recommended Workflow — Billing
 
 ```
 Option 3  →  Calculate Bill          Generate the bill (must do this first)
@@ -569,11 +665,139 @@ Option 5  →  View Payment Summary    Check outstanding balance and status
 Option 6  →  View Payment History    See every individual payment recorded
 ```
 
-You can also use **Option 1** to see all users in a columnar layout, and **Option 2** to look up any specific user's full profile at any time.
+### Recommended Workflow — New User Registration
+
+```
+Option 7  →  Register New User
+              Step 1: Select account type (Residential / Commercial / Industrial)
+              Step 2: Enter user details (ID, name, address, meter readings)
+              Step 3: Enter type-specific field (allowance / license / capacity)
+              Step 4: Submit required documents one by one
+                        - Select document type (1–6)
+                        - Enter document number
+                        - Enter issue date (dd/MM/yyyy)
+                        - Enter expiry date (dd/MM/yyyy)
+                        - Enter issuing authority
+                        - Repeat or type 0 to finish
+              Step 5: System validates required documents
+                        - If all present → user is registered ✓
+                        - If any missing → registration is blocked ✗
+Option 8  →  View User Documents     See all submitted documents for any user
+```
 
 ---
 
 ## 🖥️ Sample Output
+
+### Register New User (Option 7)
+
+```
+========================================
+         REGISTER NEW USER
+========================================
+  Select Account Type:
+  1. Residential
+  2. Commercial
+  3. Industrial
+  Enter choice (1-3): 1
+
+  --- User Information ---
+  User ID        : R002
+  Full Name      : Sara Islam
+  Address        : 45 Lake View Road
+  Previous Reading (kWh): 1200
+  Current Reading  (kWh): 1950
+
+  Monthly Allowance (BDT, press Enter for 0): 500
+
+  --- Required Documents for Residential Account ---
+    • National ID
+    • Utility Ownership Proof
+
+  Available Document Types:
+    1. National ID   2. Passport   3. Driving License
+    4. Utility Ownership Proof   5. Business Registration
+    6. Industrial License        0. Done
+  Select document type: 1
+  Document Number  : NID-882345
+  Issue Date (dd/MM/yyyy)  : 10/03/2018
+  Expiry Date (dd/MM/yyyy) : 10/03/2028
+  Issuing Authority        : Bangladesh Election Commission
+
+  [OK] National ID added successfully.
+  Documents submitted so far: 1
+
+  Select document type: 4
+  Document Number  : UTIL-200456
+  Issue Date (dd/MM/yyyy)  : 01/06/2021
+  Expiry Date (dd/MM/yyyy) : 01/06/2031
+  Issuing Authority        : DESCO
+
+  [OK] Utility Ownership Proof added successfully.
+  Documents submitted so far: 2
+
+  Select document type: 0
+
+========================================
+        USER REGISTERED SUCCESSFULLY
+========================================
+  User ID      : R002
+  Name         : Sara Islam
+  Account Type : Residential
+  Address      : 45 Lake View Road
+  Documents    : 2 submitted
+  Total Users  : 4
+========================================
+```
+
+### View User Documents (Option 8)
+
+```
+========================================
+         USER DOCUMENTS
+========================================
+  User     : Sara Islam (R002)
+  Address  : 45 Lake View Road
+  Total    : 2 document(s)
+----------------------------------------
+  --- Document 1 ---
+  Document Type   : National ID
+  Document Number : NID-882345
+  Issue Date      : 10 Mar 2018
+  Expiry Date     : 10 Mar 2028
+  Issued By       : Bangladesh Election Commission
+  Submitted At    : 16 May 2026  10:32 AM
+  Status          : VALID ✓
+
+  --- Document 2 ---
+  Document Type   : Utility Ownership Proof
+  Document Number : UTIL-200456
+  Issue Date      : 01 Jun 2021
+  Expiry Date     : 01 Jun 2031
+  Issued By       : DESCO
+  Submitted At    : 16 May 2026  10:33 AM
+  Status          : VALID ✓
+
+========================================
+```
+
+### Registration Blocked — Missing Document
+
+```
+  [Registration Blocked] Missing required document: 'Utility Ownership Proof'
+  is mandatory for Residential accounts.
+  User was NOT registered. Please restart and submit all required documents.
+```
+
+### Document Error During Submission
+
+```
+  [Document Error] National ID expired on 01 Jan 2024.
+  Only valid documents can be submitted.
+
+  [Document Error] A document of type 'National ID' has already been
+  submitted for this user. Each document type can only be added once.
+```
 
 ### Bill Report (Option 3)
 
@@ -624,76 +848,37 @@ Outstanding     : 8001.00 BDT
 ========================================
 ```
 
-### Payment Summary (Option 5)
-
-```
-========================================
-         PAYMENT SUMMARY
-========================================
-  Total Bill     : 8001.00 BDT
-  Total Paid     : 5000.00 BDT
-  Outstanding    : 3001.00 BDT
-  Payment Status : PARTIALLY PAID
-  No. of Payments: 1
-========================================
-```
-
-### Payment History (Option 6)
-
-```
-========================================
-         PAYMENT HISTORY
-========================================
-  --- Payment #1 ---
-  Reference No.  : TXN987654
-  Amount Paid    : 5000.00 BDT
-  Payment Method : MobileBanking
-  Payment Date   : 13 May 2026  09:45 AM
-  Remarks        : First partial payment
-
-----------------------------------------
-  Total Paid : 5000.00 BDT
-  Status     : PARTIALLY PAID
-========================================
-```
-
-### User-Friendly Error Messages
-
-```
-  [Input Error]   Invalid User ID: ''. User ID cannot be empty or blank.
-
-  [Not Found]     No user found with ID 'X999'. Please check the ID and try again.
-
-  [Billing Error] Current reading (2000 kWh) cannot be less than previous
-                  reading (3000 kWh). Meter readings must increase over time.
-
-  [Payment Error] No bill has been generated for this user yet. Please
-                  calculate the bill before recording a payment.
-```
-
 ---
 
 ## 🧠 Design Decisions Explained
 
+### Why a Separate Document System?
+
+Separating document storage (`DocumentStore`, `UserDocument`) from user data (`ElectricityUser`) follows the **Single Responsibility Principle**. `ElectricityUser` knows about meter readings and billing. `DocumentStore` knows about what documents a user holds and whether requirements are met. Neither class needs to know about the other's internals. This makes both independently testable and extendable.
+
+### Why Block Registration on Missing Documents?
+
+In a real utility company, a customer cannot receive a connection without identity verification and proof of ownership or business registration. Enforcing this in the system — rather than making documents optional — means the data model accurately reflects reality. The `ValidateRequiredDocuments` methods in `DocumentStore` are the enforcement layer, and they throw a `MissingRequiredDocumentException` with the exact document name and account type, so the user knows precisely what is still needed.
+
+### Why Immutable UserDocument?
+
+A submitted document is a legal record. It should not be editable after submission — the same way a signed form cannot be quietly modified later. Making all fields `private readonly` and removing all setters enforces this permanently at the language level, not just through convention.
+
 ### Why Separate BillCalculator and ElectricityUser Hierarchies?
 
-Keeping billing logic out of user classes follows the **Single Responsibility Principle**. `ResidentialUser` knows about the customer — their ID, address, readings. `ResidentialBillCalculator` knows about billing rates and tax. Neither class has any reason to reach into the other's domain. This makes each class independently testable, extendable, and replaceable.
+Keeping billing logic out of user classes follows the **Single Responsibility Principle**. `ResidentialUser` knows about the customer — their ID, address, readings. `ResidentialBillCalculator` knows about billing rates and tax. Neither class has any reason to reach into the other's domain.
 
-### Why 17 Exception Classes?
+### Why 21 Exception Classes?
 
 A single `throw new Exception("something went wrong")` fails on three counts — it tells the developer nothing about what failed, it tells the user nothing actionable, and it is impossible to catch specifically. Named exceptions solve all three: each catch block is precise, each message is accurate, and adding a new failure mode means adding a new class — nothing existing is disturbed.
 
-### Why ReadOnlyCollection for Payment History?
+### Why ReadOnlyCollection for Both Payment History and Document Store?
 
-The payment history is a financial record. It should never be possible for code outside `PaymentTracker` to add a fake payment, remove a real one, or reorder the list. Exposing it as `ReadOnlyCollection<PaymentRecord>` enforces this at compile time — the wrapper is built into the .NET type system.
+Both payment history and document history are permanent records. It should never be possible for external code to insert, delete, or reorder entries in either list. `ReadOnlyCollection<T>` enforces this at compile time — the wrapper is built into the .NET type system.
 
 ### Why Interface for Validation?
 
-`ICustomerValidator` decouples `Customer` from its validator. In a university project this is elegant design. In a production system it would mean you could swap in a validator backed by a database, an API, or a regex library without touching the `Customer` class at all. The interface makes the dependency explicit and the substitution trivial.
-
-### Why Private Category Filter Methods in UserManager?
-
-`GetResidentialUsers()`, `GetCommercialUsers()`, and `GetIndustrialUsers()` are internal helpers. External code never needs to call them — only `UserManager`'s own public methods do. Keeping them `private` prevents external code from depending on implementation details that could change.
+`ICustomerValidator` decouples `Customer` from its validator. In a production system it would mean you could swap in a validator backed by a database, an API, or a regex library without touching the `Customer` class at all.
 
 ---
 
@@ -709,7 +894,7 @@ This project was carefully debugged and improved from its original version. Ever
 | 4 | Irrelevant `using` directives in multiple files | Likely copied from unrelated code | All unused directives removed from all files |
 | 5 | `MonthlyAllowance`, `LicenseNumber`, `ProductionCapacity` were unprotected auto-properties | No validation — anyone could set them to invalid values | Replaced with private backing fields and validated setters |
 | 6 | `Address` and `ConnectionYear` in `ElectricityUser` were unprotected | No validation — blank addresses and impossible years were accepted | Both now have private fields with validated setters |
-| 7 | All errors used `throw new Exception(...)` | No meaningful distinction between failure types | Replaced with 17 domain-specific custom exception classes |
+| 7 | All errors used `throw new Exception(...)` | No meaningful distinction between failure types | Replaced with 21 domain-specific custom exception classes |
 
 ---
 
@@ -719,9 +904,10 @@ This project was carefully debugged and improved from its original version. Ever
 |---|---|---|
 | C# | 10+ | Primary language — strong OOP support, clean syntax |
 | .NET | 6.0+ | Cross-platform runtime — runs on Windows, macOS, Linux |
-| `System.Collections.ObjectModel` | Built-in | `ReadOnlyCollection<T>` for immutable payment history |
-| `System.Collections.Generic` | Built-in | `Dictionary<K,V>` for fast user lookup, `List<T>` for payment records |
+| `System.Collections.ObjectModel` | Built-in | `ReadOnlyCollection<T>` for immutable payment history and document store |
+| `System.Collections.Generic` | Built-in | `Dictionary<K,V>` for fast user lookup, `List<T>` for records |
 | `System.Linq` | Built-in | Category filtering in `UserManager` |
+| `System.Globalization` | Built-in | `DateTime.TryParseExact` for strict date input parsing in registration |
 
 ---
 
@@ -735,7 +921,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **⚡ Electricity Bill Calculator**
 
-*Clean Architecture · 5 OOP Pillars · 17 Custom Exceptions · Full Payment Lifecycle · Complete Encapsulation*
+*Clean Architecture · 5 OOP Pillars · 21 Custom Exceptions · Document Verification · Full Payment Lifecycle · Complete Encapsulation*
 
 Built as an Object-Oriented Programming university project in C#.
 

@@ -67,10 +67,10 @@ public class UserManager
             {
                 string residentialEntry = rowIndex < residentialUsers.Count
                     ? residentialUsers[rowIndex].UserId + " - " + residentialUsers[rowIndex].UserName : "";
-                string commercialEntry  = rowIndex < commercialUsers.Count
-                    ? commercialUsers[rowIndex].UserId  + " - " + commercialUsers[rowIndex].UserName  : "";
-                string industrialEntry  = rowIndex < industrialUsers.Count
-                    ? industrialUsers[rowIndex].UserId  + " - " + industrialUsers[rowIndex].UserName  : "";
+                string commercialEntry = rowIndex < commercialUsers.Count
+                    ? commercialUsers[rowIndex].UserId + " - " + commercialUsers[rowIndex].UserName : "";
+                string industrialEntry = rowIndex < industrialUsers.Count
+                    ? industrialUsers[rowIndex].UserId + " - " + industrialUsers[rowIndex].UserName : "";
 
                 Console.WriteLine($"  {residentialEntry,-25} {commercialEntry,-25} {industrialEntry,-25}");
             }
@@ -232,8 +232,7 @@ public class UserManager
             Console.Write("\nEnter Payment Amount (BDT): ");
             string amountInput = Console.ReadLine();
             if (!double.TryParse(amountInput, out double paymentAmount))
-                throw new FormatException(
-                    $"'{amountInput}' is not a valid number. Please enter a numeric payment amount.");
+                throw new FormatException($"'{amountInput}' is not a valid number. Please enter a numeric payment amount.");
 
             Console.WriteLine("\nSelect Payment Method:");
             Console.WriteLine("  1. Cash");
@@ -246,10 +245,10 @@ public class UserManager
             PaymentMethod selectedMethod;
             switch (methodChoice)
             {
-                case "1": selectedMethod = PaymentMethod.Cash;          break;
-                case "2": selectedMethod = PaymentMethod.BankTransfer;  break;
-                case "3": selectedMethod = PaymentMethod.MobileBanking; break;
-                case "4": selectedMethod = PaymentMethod.ChequePayment; break;
+                case "1": selectedMethod = PaymentMethod.Cash;           break;
+                case "2": selectedMethod = PaymentMethod.BankTransfer;   break;
+                case "3": selectedMethod = PaymentMethod.MobileBanking;  break;
+                case "4": selectedMethod = PaymentMethod.ChequePayment;  break;
                 default:
                     throw new InvalidMenuChoiceException(methodChoice ?? "");
             }
@@ -376,6 +375,295 @@ public class UserManager
         catch (Exception ex)
         {
             Console.WriteLine($"\n  [Unexpected Error] Could not display payment history. Details: {ex.Message}");
+        }
+    }
+
+
+    public void RegisterNewUser()
+    {
+        try
+        {
+            Console.WriteLine("\n========================================");
+            Console.WriteLine("         REGISTER NEW USER              ");
+            Console.WriteLine("========================================");
+            Console.WriteLine("  Select Account Type:");
+            Console.WriteLine("  1. Residential");
+            Console.WriteLine("  2. Commercial");
+            Console.WriteLine("  3. Industrial");
+            Console.Write("  Enter choice (1-3): ");
+            string typeChoice = Console.ReadLine()?.Trim();
+
+            if (typeChoice != "1" && typeChoice != "2" && typeChoice != "3")
+                throw new InvalidMenuChoiceException(typeChoice ?? "");
+
+            Console.WriteLine("\n  --- User Information ---");
+
+            Console.Write("  User ID        : ");
+            string userId = Console.ReadLine()?.Trim();
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new InvalidUserIdException(userId ?? "");
+
+            if (registeredUsers.ContainsKey(userId.ToUpper()))
+                throw new DuplicateUserIdException(userId);
+
+            Console.Write("  Full Name      : ");
+            string userName = Console.ReadLine()?.Trim();
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new InvalidUserNameException(userName ?? "");
+
+            Console.Write("  Address        : ");
+            string address = Console.ReadLine()?.Trim();
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Address cannot be empty or blank.");
+
+            Console.Write("  Previous Reading (kWh): ");
+            if (!double.TryParse(Console.ReadLine(), out double previousReading))
+                throw new FormatException("Previous reading must be a valid number.");
+            if (previousReading < 0)
+                throw new InvalidMeterReadingException("Previous Reading", previousReading);
+
+            Console.Write("  Current Reading  (kWh): ");
+            if (!double.TryParse(Console.ReadLine(), out double currentReading))
+                throw new FormatException("Current reading must be a valid number.");
+            if (currentReading < 0)
+                throw new InvalidMeterReadingException("Current Reading", currentReading);
+            if (currentReading < previousReading)
+                throw new CurrentReadingBelowPreviousException(previousReading, currentReading);
+
+            ElectricityUser newUser;
+            string          accountTypeLabel;
+            string[]        requiredDocTypes;
+
+            if (typeChoice == "1")
+            {
+                Console.Write("\n  Monthly Allowance (BDT, press Enter for 0): ");
+                string allowInput = Console.ReadLine()?.Trim();
+                double allowance  = string.IsNullOrWhiteSpace(allowInput) ? 0 : double.Parse(allowInput);
+
+                ResidentialUser rUser = new ResidentialUser(userId, userName, address, previousReading, currentReading);
+                rUser.MonthlyAllowance = allowance;
+                newUser          = rUser;
+                accountTypeLabel = "Residential";
+                requiredDocTypes = new[] { "National ID", "Utility Ownership Proof" };
+            }
+            else if (typeChoice == "2")
+            {
+                Console.Write("\n  License Number (press Enter for N/A): ");
+                string licInput = Console.ReadLine()?.Trim();
+
+                CommercialUser cUser = new CommercialUser(userId, userName, address, previousReading, currentReading);
+                if (!string.IsNullOrWhiteSpace(licInput))
+                    cUser.LicenseNumber = licInput;
+                newUser          = cUser;
+                accountTypeLabel = "Commercial";
+                requiredDocTypes = new[] { "National ID", "Business Registration" };
+            }
+            else
+            {
+                Console.Write("\n  Production Capacity (MW, press Enter for 0): ");
+                string capInput = Console.ReadLine()?.Trim();
+                double capacity = string.IsNullOrWhiteSpace(capInput) ? 0 : double.Parse(capInput);
+
+                IndustrialUser iUser = new IndustrialUser(userId, userName, address, previousReading, currentReading);
+                iUser.ProductionCapacity = capacity;
+                newUser          = iUser;
+                accountTypeLabel = "Industrial";
+                requiredDocTypes = new[] { "National ID", "Business Registration", "Industrial License" };
+            }
+
+            Console.WriteLine($"\n  --- Required Documents for {accountTypeLabel} Account ---");
+            foreach (string doc in requiredDocTypes)
+                Console.WriteLine($"    • {doc}");
+
+            Console.WriteLine("\n  You must submit all required documents to complete registration.");
+            Console.WriteLine("  Enter each document when prompted.\n");
+
+            bool addingDocuments = true;
+            while (addingDocuments)
+            {
+                Console.WriteLine("  Available Document Types:");
+                Console.WriteLine("    1. National ID");
+                Console.WriteLine("    2. Passport");
+                Console.WriteLine("    3. Driving License");
+                Console.WriteLine("    4. Utility Ownership Proof");
+                Console.WriteLine("    5. Business Registration");
+                Console.WriteLine("    6. Industrial License");
+                Console.WriteLine("    0. Done adding documents");
+                Console.Write("  Select document type: ");
+                string docChoice = Console.ReadLine()?.Trim();
+
+                if (docChoice == "0")
+                {
+                    addingDocuments = false;
+                    continue;
+                }
+
+                DocumentType selectedDocType;
+                switch (docChoice)
+                {
+                    case "1": selectedDocType = DocumentType.NationalId;            break;
+                    case "2": selectedDocType = DocumentType.Passport;              break;
+                    case "3": selectedDocType = DocumentType.Driving;        break;
+                    case "4": selectedDocType = DocumentType.UtilityOwnershipProof; break;
+                    case "5": selectedDocType = DocumentType.BusinessRegistration;  break;
+                    case "6": selectedDocType = DocumentType.IndustrialLicense;     break;
+                    default:
+                        Console.WriteLine("  [Input Error] Invalid document type. Please enter 0–6.");
+                        continue;
+                }
+
+                try
+                {
+                    Console.Write($"  Document Number  : ");
+                    string docNumber = Console.ReadLine()?.Trim();
+
+                    Console.Write("  Issue Date (dd/MM/yyyy)  : ");
+                    if (!DateTime.TryParseExact(Console.ReadLine()?.Trim(), "dd/MM/yyyy",
+                        null, System.Globalization.DateTimeStyles.None, out DateTime issueDate))
+                        throw new FormatException("Invalid date format. Use dd/MM/yyyy (e.g. 15/06/2020).");
+
+                    Console.Write("  Expiry Date (dd/MM/yyyy) : ");
+                    if (!DateTime.TryParseExact(Console.ReadLine()?.Trim(), "dd/MM/yyyy",
+                        null, System.Globalization.DateTimeStyles.None, out DateTime expiryDate))
+                        throw new FormatException("Invalid date format. Use dd/MM/yyyy (e.g. 15/06/2030).");
+
+                    Console.Write("  Issuing Authority        : ");
+                    string issuingAuthority = Console.ReadLine()?.Trim();
+
+                    UserDocument document = new UserDocument(selectedDocType, docNumber, issueDate, expiryDate, issuingAuthority);
+                    newUser.DocumentStore.AddDocument(document);
+
+                    Console.WriteLine($"\n  [OK] {UserDocument.FormatDocumentType(selectedDocType)} added successfully.");
+
+                    int docsAdded = newUser.DocumentStore.DocumentCount;
+                    Console.WriteLine($"  Documents submitted so far: {docsAdded}");
+                    Console.WriteLine();
+                }
+                catch (InvalidDocumentNumberException ex)
+                {
+                    Console.WriteLine($"\n  [Document Error] {ex.Message}\n");
+                }
+                catch (ExpiredDocumentException ex)
+                {
+                    Console.WriteLine($"\n  [Document Error] {ex.Message}\n");
+                }
+                catch (DocumentAlreadyExistsException ex)
+                {
+                    Console.WriteLine($"\n  [Document Error] {ex.Message}\n");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"\n  [Document Error] {ex.Message}\n");
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"\n  [Input Error] {ex.Message}\n");
+                }
+            }
+
+            try
+            {
+                if (typeChoice == "1")
+                    newUser.DocumentStore.ValidateRequiredDocumentsForResidential();
+                else if (typeChoice == "2")
+                    newUser.DocumentStore.ValidateRequiredDocumentsForCommercial();
+                else
+                    newUser.DocumentStore.ValidateRequiredDocumentsForIndustrial();
+            }
+            catch (MissingRequiredDocumentException ex)
+            {
+                Console.WriteLine($"\n  [Registration Blocked] {ex.Message}");
+                Console.WriteLine("  User was NOT registered. Please restart and submit all required documents.");
+                return;
+            }
+
+            registeredUsers[newUser.UserId] = newUser;
+
+            Console.WriteLine("\n========================================");
+            Console.WriteLine("        USER REGISTERED SUCCESSFULLY    ");
+            Console.WriteLine("========================================");
+            Console.WriteLine($"  User ID      : {newUser.UserId}");
+            Console.WriteLine($"  Name         : {newUser.UserName}");
+            Console.WriteLine($"  Account Type : {accountTypeLabel}");
+            Console.WriteLine($"  Address      : {newUser.Address}");
+            Console.WriteLine($"  Documents    : {newUser.DocumentStore.DocumentCount} submitted");
+            Console.WriteLine($"  Total Users  : {registeredUsers.Count}");
+            Console.WriteLine("========================================\n");
+        }
+        catch (InvalidMenuChoiceException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (InvalidUserIdException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (DuplicateUserIdException ex)
+        {
+            Console.WriteLine($"\n  [Registration Error] {ex.Message}");
+        }
+        catch (InvalidUserNameException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (InvalidMeterReadingException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (CurrentReadingBelowPreviousException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (FormatException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\n  [Unexpected Error] Registration failed. Details: {ex.Message}");
+        }
+    }
+
+    public void ViewUserDocuments()
+    {
+        try
+        {
+            Console.Write("\nEnter User ID: ");
+            string inputUserId = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(inputUserId))
+                throw new InvalidUserIdException(inputUserId ?? "");
+
+            registeredUsers.TryGetValue(inputUserId.Trim().ToUpper(), out ElectricityUser selectedUser);
+
+            if (selectedUser == null)
+                throw new UserNotFoundException(inputUserId.Trim());
+
+            Console.WriteLine("\n========================================");
+            Console.WriteLine("         USER DOCUMENTS                 ");
+            Console.WriteLine("========================================");
+            Console.WriteLine($"  User     : {selectedUser.UserName} ({selectedUser.UserId})");
+            Console.WriteLine($"  Address  : {selectedUser.Address}");
+            Console.WriteLine($"  Total    : {selectedUser.DocumentStore.DocumentCount} document(s)");
+            Console.WriteLine("----------------------------------------");
+            selectedUser.DocumentStore.DisplayAllDocuments();
+            Console.WriteLine("========================================\n");
+        }
+        catch (InvalidUserIdException ex)
+        {
+            Console.WriteLine($"\n  [Input Error] {ex.Message}");
+        }
+        catch (UserNotFoundException ex)
+        {
+            Console.WriteLine($"\n  [Not Found] {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\n  [Unexpected Error] Could not display documents. Details: {ex.Message}");
         }
     }
 }

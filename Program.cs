@@ -60,7 +60,9 @@ public class Program
                     Console.WriteLine("  4. Record Payment");
                     Console.WriteLine("  5. View Payment Summary");
                     Console.WriteLine("  6. View Payment History");
-                    Console.WriteLine("  7. Exit");
+                    Console.WriteLine("  7. Register New User");
+                    Console.WriteLine("  8. View User Documents");
+                    Console.WriteLine("  9. Exit");
                     Console.WriteLine(" ");
                     Console.Write("  Enter Choice: ");
 
@@ -124,6 +126,14 @@ public class Program
                             break;
 
                         case "7":
+                            userManager.RegisterNewUser();
+                            break;
+
+                        case "8":
+                            userManager.ViewUserDocuments();
+                            break;
+
+                        case "9":
                             Console.WriteLine("\nExiting system. Goodbye!");
                             isRunning = false;
                             break;
@@ -157,7 +167,7 @@ public class Program
         try
         {
             Console.WriteLine("  Base Bill  : " + calculator.CalculateBaseBill().ToString("F2") + " BDT");
-            Console.WriteLine("  Tax        : " + calculator.CalculateTax().ToString("F2")      + " BDT");
+            Console.WriteLine("  Tax        : " + calculator.CalculateTax().ToString("F2") + " BDT");
             Console.WriteLine("  Total Bill : " + calculator.CalculateTotalBill().ToString("F2") + " BDT");
         }
         catch (NegativeUnitsConsumedException ex)

@@ -4,8 +4,6 @@ public class ElectricityUser
 {
     private string _userId;
     private string _userName;
-    private string _address;
-    private int    _connectionYear;
     private double _previousMeterReading;
     private double _currentMeterReading;
 
@@ -30,6 +28,9 @@ public class ElectricityUser
             _userName = value.Trim();
         }
     }
+
+    private string _address;
+    private int _connectionYear;
 
     public string Address
     {
@@ -78,8 +79,6 @@ public class ElectricityUser
         }
     }
 
-    public PaymentTracker PaymentTracker { get; }
-
     public ElectricityUser(
         string userId,
         string userName,
@@ -94,7 +93,11 @@ public class ElectricityUser
         CurrentReading  = currentMeterReading;
         ConnectionYear  = 2024;
         PaymentTracker  = new PaymentTracker();
+        DocumentStore   = new DocumentStore();
     }
+
+    public PaymentTracker PaymentTracker { get; }
+    public DocumentStore  DocumentStore  { get; }
 
     public double UnitConsumed()
     {
@@ -117,8 +120,8 @@ public class ElectricityUser
         Console.WriteLine("Address         : " + Address);
         Console.WriteLine("Connection Year : " + ConnectionYear);
         Console.WriteLine("Previous Reading: " + PreviousReading + " kWh");
-        Console.WriteLine("Current Reading : " + CurrentReading  + " kWh");
-        Console.WriteLine("Units Consumed  : " + UnitConsumed()  + " kWh");
+        Console.WriteLine("Current Reading : " + CurrentReading + " kWh");
+        Console.WriteLine("Units Consumed  : " + UnitConsumed() + " kWh");
         Console.WriteLine("--------------------------------");
     }
 }

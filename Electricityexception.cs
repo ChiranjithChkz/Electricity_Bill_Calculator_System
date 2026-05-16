@@ -30,7 +30,7 @@ public class InvalidMeterReadingException : Exception
     public InvalidMeterReadingException(string readingLabel, double attemptedValue)
         : base($"Invalid {readingLabel}: {attemptedValue} kWh. Meter readings cannot be negative.")
     {
-        ReadingLabel   = readingLabel;
+        ReadingLabel = readingLabel;
         AttemptedValue = attemptedValue;
     }
 }
@@ -38,14 +38,13 @@ public class InvalidMeterReadingException : Exception
 public class CurrentReadingBelowPreviousException : Exception
 {
     public double PreviousReading { get; }
-    public double CurrentReading  { get; }
+    public double CurrentReading { get; }
 
     public CurrentReadingBelowPreviousException(double previousReading, double currentReading)
-        : base($"Current reading ({currentReading} kWh) cannot be less than previous reading " +
-               $"({previousReading} kWh). Meter readings must increase over time.")
+        : base($"Current reading ({currentReading} kWh) cannot be less than previous reading ({previousReading} kWh). Meter readings must increase over time.")
     {
         PreviousReading = previousReading;
-        CurrentReading  = currentReading;
+        CurrentReading = currentReading;
     }
 }
 
@@ -54,8 +53,7 @@ public class NegativeUnitsConsumedException : Exception
     public double UnitsConsumed { get; }
 
     public NegativeUnitsConsumedException(double unitsConsumed)
-        : base($"Calculated units consumed is negative ({unitsConsumed} kWh). " +
-               $"Current reading must be greater than or equal to previous reading.")
+        : base($"Calculated units consumed is negative ({unitsConsumed} kWh). Current reading must be greater than or equal to previous reading.")
     {
         UnitsConsumed = unitsConsumed;
     }
@@ -96,7 +94,7 @@ public class InvalidMenuChoiceException : Exception
     public string AttemptedChoice { get; }
 
     public InvalidMenuChoiceException(string attemptedChoice)
-        : base($"'{attemptedChoice}' is not a valid menu option. Please enter a number between 1 and 7.")
+        : base($"'{attemptedChoice}' is not a valid menu option. Please enter a number between 1 and 10.")
     {
         AttemptedChoice = attemptedChoice;
     }
@@ -107,8 +105,7 @@ public class BillingCalculationException : Exception
     public string UserId { get; }
 
     public BillingCalculationException(string userId, Exception innerException)
-        : base($"An error occurred while calculating the bill for user '{userId}'. " +
-               $"Please check the user's meter readings.", innerException)
+        : base($"An error occurred while calculating the bill for user '{userId}'. Please check the user's meter readings.", innerException)
     {
         UserId = userId;
     }
@@ -144,7 +141,7 @@ public class InvalidCustomerReadingException : Exception
     public InvalidCustomerReadingException(string readingLabel, double attemptedValue)
         : base($"Invalid {readingLabel}: {attemptedValue} kWh. Meter readings cannot be negative.")
     {
-        ReadingLabel   = readingLabel;
+        ReadingLabel = readingLabel;
         AttemptedValue = attemptedValue;
     }
 }
@@ -165,8 +162,7 @@ public class InvalidPaymentReferenceException : Exception
     public string AttemptedReference { get; }
 
     public InvalidPaymentReferenceException(string attemptedReference)
-        : base($"Invalid payment reference number: '{attemptedReference}'. " +
-               $"Reference number cannot be empty or blank.")
+        : base($"Invalid payment reference number: '{attemptedReference}'. Reference number cannot be empty or blank.")
     {
         AttemptedReference = attemptedReference;
     }
@@ -175,8 +171,7 @@ public class InvalidPaymentReferenceException : Exception
 public class NoBillGeneratedException : Exception
 {
     public NoBillGeneratedException()
-        : base("No bill has been generated for this user yet. " +
-               "Please calculate the bill before recording a payment.")
+        : base("No bill has been generated for this user yet. Please calculate the bill before recording a payment.")
     {
     }
 }
@@ -184,8 +179,8 @@ public class NoBillGeneratedException : Exception
 public class ExcessiveOverpaymentException : Exception
 {
     public double AttemptedPayment { get; }
-    public double TotalBill        { get; }
-    public double AlreadyPaid      { get; }
+    public double TotalBill { get; }
+    public double AlreadyPaid { get; }
 
     public ExcessiveOverpaymentException(double attemptedPayment, double totalBill, double alreadyPaid)
         : base($"Payment of {attemptedPayment:F2} BDT would exceed 150% of the total bill " +
@@ -194,5 +189,56 @@ public class ExcessiveOverpaymentException : Exception
         AttemptedPayment = attemptedPayment;
         TotalBill        = totalBill;
         AlreadyPaid      = alreadyPaid;
+    }
+}
+
+public class InvalidDocumentNumberException : Exception
+{
+    public string AttemptedValue { get; }
+
+    public InvalidDocumentNumberException(string attemptedValue)
+        : base($"Invalid document number: '{attemptedValue}'. Document number cannot be empty or blank.")
+    {
+        AttemptedValue = attemptedValue;
+    }
+}
+
+public class ExpiredDocumentException : Exception
+{
+    public DocumentType DocumentType { get; }
+    public DateTime     ExpiryDate   { get; }
+
+    public ExpiredDocumentException(DocumentType documentType, DateTime expiryDate)
+        : base($"{UserDocument.FormatDocumentType(documentType)} expired on {expiryDate:dd MMM yyyy}. " +
+               $"Only valid documents can be submitted.")
+    {
+        DocumentType = documentType;
+        ExpiryDate   = expiryDate;
+    }
+}
+
+public class MissingRequiredDocumentException : Exception
+{
+    public DocumentType RequiredDocument { get; }
+    public string       AccountType      { get; }
+
+    public MissingRequiredDocumentException(DocumentType requiredDocument, string accountType)
+        : base($"Missing required document: '{UserDocument.FormatDocumentType(requiredDocument)}' " +
+               $"is mandatory for {accountType} accounts.")
+    {
+        RequiredDocument = requiredDocument;
+        AccountType      = accountType;
+    }
+}
+
+public class DocumentAlreadyExistsException : Exception
+{
+    public DocumentType DocumentType { get; }
+
+    public DocumentAlreadyExistsException(DocumentType documentType)
+        : base($"A document of type '{UserDocument.FormatDocumentType(documentType)}' has already been " +
+               $"submitted for this user. Each document type can only be added once.")
+    {
+        DocumentType = documentType;
     }
 }
