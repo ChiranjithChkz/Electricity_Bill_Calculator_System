@@ -4,7 +4,7 @@
 
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET_6.0+-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![OOP](https://img.shields.io/badge/OOP-5_Pillars-orange?style=for-the-badge)
+![OOP](https://img.shields.io/badge/OOP-4_Pillars-orange?style=for-the-badge)
 ![Exceptions](https://img.shields.io/badge/Custom_Exceptions-21-red?style=for-the-badge)
 ![Files](https://img.shields.io/badge/Source_Files-21-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=for-the-badge)
